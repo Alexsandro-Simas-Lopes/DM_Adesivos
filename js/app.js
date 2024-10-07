@@ -403,15 +403,28 @@ document.addEventListener("DOMContentLoaded", function() {
         resetDropdown();
     }
 
-    dropdownButton.addEventListener("click", function(event) {
-        event.stopPropagation(); 
-        dropdownMenu.classList.contains("show") ? hideDropdown() : showDropdown();
-        if (!dropdownMenu.classList.contains("show")) { // Salvando o estado dos checkboxes ao fechar o dropdown
-            saveCheckboxStates();
-        } else { // Restaurando o estado dos checkboxes ao abrir o dropdown
-            restoreCheckboxStates();
-        }
+    document.addEventListener("DOMContentLoaded", function() {
+        // Função de clique
+        dropdownButton.addEventListener("click", function(event) {
+            event.stopPropagation(); 
+            dropdownMenu.classList.contains("show") ? hideDropdown() : showDropdown();
+            if (!dropdownMenu.classList.contains("show")) { // Salvando o estado dos checkboxes ao fechar o dropdown
+                saveCheckboxStates();
+            } else { // Restaurando o estado dos checkboxes ao abrir o dropdown
+                restoreCheckboxStates();
+            }
+        });
     });
+
+    // dropdownButton.addEventListener("click", function(event) {
+    //     event.stopPropagation(); 
+    //     dropdownMenu.classList.contains("show") ? hideDropdown() : showDropdown();
+    //     if (!dropdownMenu.classList.contains("show")) { // Salvando o estado dos checkboxes ao fechar o dropdown
+    //         saveCheckboxStates();
+    //     } else { // Restaurando o estado dos checkboxes ao abrir o dropdown
+    //         restoreCheckboxStates();
+    //     }
+    // });
 
     // Evento de clique fora do dropdown para fechá-lo
     document.addEventListener("click", function(event) {
@@ -532,26 +545,6 @@ function getCategoriasSelecionadas() {
     return categoriasSelecionadas;
 }
 
-// Evento de clique no botão "Buscar"
-document.querySelector(".dropdown-btn").addEventListener("click", function() {
-    var dropdownMenu = document.getElementById("dropdown-menu");
-    dropdownMenu.classList.remove("show");
-
-    var categoriasSelecionadas = getCategoriasSelecionadas(); // Obtém as categorias e suas subcategorias selecionadas
-
-    console.log("Categorias selecionadas:", categoriasSelecionadas);
-
-    var itensFiltrados = filtrarBaseDeDados(categoriasSelecionadas); // Filtra a base de dados com base nas subcategorias selecionadas
-    console.log("itens filtrados", itensFiltrados); 
-    
-    if(itensFiltrados.length == 0){
-        loja.metodos.feedBackBuscaFalha();
-    }else{
-        itemExibidosNoMenu = itensFiltrados;
-        loja.metodos.obterItensLoja(true);
-    }
-});
-
 // Função para filtrar a base de dados com base nas categorias e subcategorias selecionadas
 function filtrarBaseDeDados(categoriasSelecionadas) {
     var filteredData = [];
@@ -566,6 +559,26 @@ function filtrarBaseDeDados(categoriasSelecionadas) {
             if (subcategorias.includes(subcategoriasItem)) {
                 filteredData.push(item); // Adiciona o item filtrado ao array
             }
+        }
+    });
+
+    // Evento de clique no botão "Buscar"
+    document.querySelector(".dropdown-btn").addEventListener("click", function() {
+        var dropdownMenu = document.getElementById("dropdown-menu");
+        dropdownMenu.classList.remove("show");
+    
+        var categoriasSelecionadas = getCategoriasSelecionadas();
+    
+        console.log("Categorias selecionadas:", categoriasSelecionadas);
+    
+        var itensFiltrados = filtrarBaseDeDados(categoriasSelecionadas);
+        console.log("itens filtrados", itensFiltrados); 
+        
+        if(itensFiltrados.length == 0){
+            loja.metodos.feedBackBuscaFalha();
+        }else{
+            itemExibidosNoMenu = itensFiltrados;
+            loja.metodos.obterItensLoja(true);
         }
     });
 
